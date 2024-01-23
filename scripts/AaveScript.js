@@ -33,6 +33,16 @@ async function interact() {
   const daiTokenAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
   await borrowDai(daiTokenAddress, lendingpool, amountDaiToBorrowWei, deployer);
   await getBorrowUserData(lendingpool, deployer);
+
+  // repay
+  await repay(amountDaiToBorrowWei, daiTokenAddress, lendingpool, deployer);
+}
+
+async function repay(amount, daiAddress, lendingPool, account) {
+  await approveErc20(daiAddress, lendingPool.address, amount, account);
+  const repayTx = await lendingPool.repay(daiAddress, amount, 1, account)
+  await repayTx.wait(1);
+  console.log("Repaid!");
 }
 
 async function borrowDai(daiAddress, lendingPool, amountDaiToBorrowWei, account) {
